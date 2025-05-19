@@ -61,4 +61,4 @@ jobs:
           docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/webapps:${{ github.sha }}
           docker stop webapps || true
           docker rm webapps || true
-          docker run -d --name webapps -p 10066:3000 ${{ secrets.DOCKER_HUB_USERNAME }}/webapps:${{ github.sha }}
+          docker run -d --name webapps -p 10269:3000 ${{ secrets.DOCKER_HUB_USERNAME }}/webapps:${{ github.sha }}

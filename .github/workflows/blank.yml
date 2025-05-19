@@ -1,0 +1,64 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build Docker image
+      run: docker build -t webapps .
+
+  cd:
+    runs-on: ubuntu-latest
+    needs: ci
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+    - name: Build Docker image for CD
+      run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/webapps:${{ github.sha }} .
+
+    - name: Tag Docker image
+      run: |
+        IMAGE_TAG=${GITHUB_SHA}
+        docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/webapps:$IMAGE_TAG ${{ secrets.DOCKER_HUB_USERNAME }}/webapps:latest
+
+    - name: Push Docker image to Docker Hub
+      run: |
+        IMAGE_TAG=${GITHUB_SHA}
+        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/webapps:$IMAGE_TAG
+        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/webapps:latest
+
+    - name: Deploy to Remote Server
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.REMOTE_USER }}
+        password: ${{ secrets.REMOTE_PASSWORD }}
+        script: |
+          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/webapps:${{ github.sha }}
+          docker stop webapps || true
+          docker rm webapps || true
+          docker run -d --name webapps -p 10066:3000 ${{ secrets.DOCKER_HUB_USERNAME }}/webapps:${{ github.sha }}

@@ -74,7 +74,7 @@ app.get("/logout", (req, res) => {
     });
 });
 
-app.get("/patients",isAuthenticated, async (req, res) => {
+app.get("/patients", async (req, res) => {
   try {
     const patients = await Patient.find();
     res.render("patients", { patients });

@@ -5,7 +5,7 @@ const methodOverride = require("method-override");
 
 const app = express();
 
-mongoose.connect("mongodb://20.0.153.128:10999/studentsnDB")
+mongoose.connect("mongodb://20.0.153.128:10999/jadeDB")
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.error("MongoDB Connection Error:", err));
 
@@ -14,68 +14,69 @@ app.use(express.json());
 app.use(methodOverride("_method"));
 app.set("view engine", "ejs");
 
-const studentSchema = new mongoose.Schema({
+const patientSchema = new mongoose.Schema({
   name: String,
   age: Number,
-  course: String,
+  ilness: String,
+  allergies: String,
 });
-const Student = mongoose.model("Student", studentSchema);
+const Patient = mongoose.model("Patient", patientSchema);
 
-app.get("/", (req, res) => res.redirect("/students"));
+app.get("/", (req, res) => res.redirect("/patients"));
 
-app.get("/students", async (req, res) => {
+app.get("/patients", async (req, res) => {
   try {
-    const students = await Student.find();
-    res.render("students", { students });
+    const patients = await Patient.find();
+    res.render("patients", { patients });
   } catch {
-    res.status(500).send("Error fetching students");
+    res.status(500).send("Error fetching patients");
   }
 });
 
-app.get("/student/new", (req, res) => res.render("new_student"));
+app.get("/patient/new", (req, res) => res.render("new_patient"));
 
-app.post("/student", async (req, res) => {
+app.post("/patient", async (req, res) => {
   try {
-    await new Student(req.body).save();
-    res.redirect("/students");
+    await new Patient(req.body).save();
+    res.redirect("/patients");
   } catch {
-    res.status(500).send("Error adding student");
+    res.status(500).send("Error adding patient");
   }
 });
 
-app.get("/student/:id", async (req, res) => {
+app.get("/patient/:id", async (req, res) => {
   try {
-    const student = await Student.findById(req.params.id);
-    if (!student) return res.status(404).send("Not Found");
-    res.render("student", { student });
+    const patient = await Patient.findById(req.params.id);
+    if (!patient) return res.status(404).send("Not Found");
+    res.render("patient", { patient });
   } catch {
-    res.status(500).send("Error fetching student");
+    res.status(500).send("Error fetching patient");
   }
 });
 
-app.get("/student/:id/edit", async (req, res) => {
+app.get("/patient/:id/edit", async (req, res) => {
   try {
-    const student = await Student.findById(req.params.id);
-    if (!student) return res.status(404).send("Not Found");
-    res.render("edit_student", { student });
+    const patient = await Patient.findById(req.params.id);
+    if (!patient) return res.status(404).send("Not Found");
+    res.render("edit_patient", { patient });
   } catch {
     res.status(500).send("Error");
   }
 });
 
-app.put("/student/:id", async (req, res) => {
+app.put("/patient/:id", async (req, res) => {
   try {
-    await Student.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.redirect("/students");
+    await Patient.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.redirect("/patients");
   } catch {
     res.status(500).send("Error updating");
   }
 });
 
-app.delete("/student/:id", async (req, res) => {
+app.delete("/patient/:id", async (req, res) => {
   try {
-    await Student.findByIdAndDelete(req.params.id);
-    res.redirect("/students");
+    await Patient.findByIdAndDelete(req.params.id);
+    res.redirect("/patients");
   } catch {
     res.status(500).send("Error deleting");
   }

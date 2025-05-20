@@ -6,7 +6,6 @@ const session = require("express-session");
 const bcrypt = require("bcryptjs");
 const MongoStore = require("connect-mongo");
 const User = require("./models/User");
-const Room = require("./models/Room");
 
 const app = express();
 
@@ -32,7 +31,6 @@ const patientSchema = new mongoose.Schema({
   age: Number,
   illness: String,
   allergies: String,
-  room: { type: mongoose.Schema.Types.ObjectId, ref: "Room" },
 });
 
 const Patient = mongoose.model("Patient", patientSchema);
@@ -61,7 +59,6 @@ app.post("/register", async (req, res) => {
         res.status(500).send("Registration failed.");
     }
 });
-
 
 app.get("/login", (req, res) => {
     res.render("login");
@@ -100,22 +97,11 @@ app.get("/patients", isAuthenticated,async (req, res) => {
   }
 });
 
-app.get("/patient/new", (req, res) =>{ 
-    const rooms = await Room.find().sort("number");
-    res.render("new_patient", {rooms});
-});
+app.get("/patient/new", (req, res) => res.render("new_patient"));
 
 app.post("/patient", async (req, res) => {
   try {
-    const { name, age, illness, allergies, room} = req.body;
-    const newPatient = new Patient({
-        name,
-        age,
-        illness,
-        allergies,
-        room
-    });
-    await newPatient.save();
+    await new Patient(req.body).save();
     res.redirect("/patients");
   } catch {
     res.status(500).send("Error adding patient");

@@ -38,7 +38,7 @@ const patientSchema = new mongoose.Schema({
 const Patient = mongoose.model("Patient", patientSchema);
 
 
-app.get("/", (req, res) => res.redirect("/room"));
+app.get("/", (req, res) => res.redirect("/login"));
 
 function isAuthenticated(req, res, next) {
     if (req.session.userId) return next();
@@ -62,21 +62,6 @@ app.post("/register", async (req, res) => {
     }
 });
 
-app.get("/room", (req, res) => {
-    res.render("room");
-});
-
-app.post("/room", async (req, res) => {
-    const { number, beds } = req.body;
-
-    try {
-        const newRoom = new Room({ number,beds });
-        await newRoom.save();
-        res.redirect("/patients");
-    } catch (err) {
-        res.status(500).send("Registration failed.");
-    }
-});
 
 app.get("/login", (req, res) => {
     res.render("login");

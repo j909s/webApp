@@ -17,7 +17,7 @@ app.set("view engine", "ejs");
 const patientSchema = new mongoose.Schema({
   name: String,
   age: Number,
-  ilness: String,
+  illness: String,
   allergies: String,
 });
 const Patient = mongoose.model("Patient", patientSchema);

@@ -18,6 +18,14 @@ app.use(express.json());
 app.use(methodOverride("_method"));
 app.set("view engine", "ejs");
 
+app.use(session({
+    secret: "secretKey123",
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({ mongoUrl: "mongodb://20.0.153.128:10999/jadeDB" })
+}));
+
+
 const patientSchema = new mongoose.Schema({
   name: String,
   age: Number,
@@ -64,7 +72,7 @@ app.post("/login", async (req, res) => {
 
     const match = await bcrypt.compare(password, user.password);
     if (!match) return res.status(500).send("Incorrect password");
-
+    req.session.userId = user._id;
     res.redirect("/patients");
     }
     catch {

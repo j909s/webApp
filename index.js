@@ -64,7 +64,7 @@ app.post("/login", async (req, res) => {
 
     const match = await bcrypt.compare(password, user.password);
     if (!match) return res.status(500).send("Incorrect password");
-    
+
     res.redirect("/patients");
     }
     catch {
@@ -79,7 +79,7 @@ app.get("/logout", (req, res) => {
     });
 });
 
-app.get("/patients", async (req, res) => {
+app.get("/patients", isAuthenticated,async (req, res) => {
   try {
     const patients = await Patient.find();
     res.render("patients", { patients });

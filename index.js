@@ -60,10 +60,10 @@ app.post("/login", async (req, res) => {
         const { username, password } = req.body;
     const user = await User.findOne({ username });
 
-    if (!user) return res.send("User not found");
+    if (!user) return res.status(500).send("User not found");
 
     const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.send("Incorrect password");
+    if (!match) return res.status(500).send("Incorrect password");
 
 
     req.session.userId = user._id;

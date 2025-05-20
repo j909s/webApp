@@ -26,23 +26,6 @@ const patientSchema = new mongoose.Schema({
 });
 const Patient = mongoose.model("Patient", patientSchema);
 
-
-
-const userSchema = new mongoose.Schema({
-  name: String,
-  username: Number,
-  password: String,
-});
-const User = mongoose.model("User", userSchema);
-
-var user1 = new User({
-    name: 'Jade',
-    username: 'user1',
-    password: 'password1',
-});
-
-user1.save();
-
 app.get("/", (req, res) => res.redirect("/login"));
 
 function isAuthenticated(req, res, next) {

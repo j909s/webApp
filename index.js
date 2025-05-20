@@ -56,20 +56,23 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-    const { username, password } = req.body;
+    try{
+        const { username, password } = req.body;
     const user = await User.findOne({ username });
-
-    console.log(user);
 
     if (!user) return res.send("User not found");
 
     const match = await bcrypt.compare(password, user.password);
-    console.log(match);
     if (!match) return res.send("Incorrect password");
 
 
     req.session.userId = user._id;
     res.redirect("/patients");
+    }
+    catch {
+    res.status(500).send("Error login failed");
+  }
+    
 });
 
 app.get("/logout", (req, res) => {

@@ -1,13 +1,9 @@
-FROM node:16
-
-WORKDIR /app
-
+FROM node:10-alpine
+RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
+WORKDIR /home/node/index
 COPY package*.json ./
-
+USER node
 RUN npm install
-
-COPY . .
-
+COPY --chown=node:node . .
 EXPOSE 3000
-
-CMD ["npm", "start"]
+CMD ["node","index.js"]

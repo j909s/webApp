@@ -26,52 +26,52 @@ const patientSchema = new mongoose.Schema({
 });
 const Patient = mongoose.model("Patient", patientSchema);
 
-app.get("/", (req, res) => res.redirect("/login"));
+app.get("/", (req, res) => res.redirect("/patients"));
 
-function isAuthenticated(req, res, next) {
-    if (req.session.userId) return next();
-    res.redirect("/login");
-}
+// function isAuthenticated(req, res, next) {
+//     if (req.session.userId) return next();
+//     res.redirect("/login");
+// }
 
-app.get("/register", (req, res) => {
-    res.render("register");
-});
+// app.get("/register", (req, res) => {
+//     res.render("register");
+// });
 
-app.post("/register", async (req, res) => {
-    const { username, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
+// app.post("/register", async (req, res) => {
+//     const { username, password } = req.body;
+//     const hashedPassword = await bcrypt.hash(password, 10);
 
-    try {
-        const newUser = new User({ username, password: hashedPassword });
-        await newUser.save();
-        res.redirect("/login");
-    } catch (err) {
-        res.status(500).send("Registration failed.");
-    }
-});
+//     try {
+//         const newUser = new User({ username, password: hashedPassword });
+//         await newUser.save();
+//         res.redirect("/login");
+//     } catch (err) {
+//         res.status(500).send("Registration failed.");
+//     }
+// });
 
-app.get("/login", (req, res) => {
-    res.render("login");
-});
+// app.get("/login", (req, res) => {
+//     res.render("login");
+// });
 
-app.post("/login", async (req, res) => {
-    const { username, password } = req.body;
-    const user = await User.findOne({ username });
+// app.post("/login", async (req, res) => {
+//     const { username, password } = req.body;
+//     const user = await User.findOne({ username });
 
-    if (!user) return res.send("User not found");
+//     if (!user) return res.send("User not found");
 
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.send("Incorrect password");
+//     const match = await bcrypt.compare(password, user.password);
+//     if (!match) return res.send("Incorrect password");
 
-    req.session.userId = user._id;
-    res.redirect("/students");
-});
+//     req.session.userId = user._id;
+//     res.redirect("/students");
+// });
 
-app.get("/logout", (req, res) => {
-    req.session.destroy(() => {
-        res.redirect("/login");
-    });
-});
+// app.get("/logout", (req, res) => {
+//     req.session.destroy(() => {
+//         res.redirect("/login");
+//     });
+// });
 
 app.get("/patients", async (req, res) => {
   try {

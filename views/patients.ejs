@@ -11,7 +11,7 @@
         <ul>
             <% patients.forEach(patient=> { %>
                 <li><a href="/patient/<%= patient._id %>">
-                        <%= patient.name %> - <%= patient.allergies %>
+                        <%= patient.name %> - <%= patient.age %> - <%= patient.illness %> - <%= patient.allergies %>
                     </a></li>
                 <% }) %>
         </ul>
@@ -81,7 +81,7 @@
             <% patients.forEach(patient => { %>
                 <li class="list-group-item">
                     <a href="/patient/<%= patient._id %>" class="text-decoration-none">
-                        <%= patient.name %> - <%= patient.allergies %>
+                        <%= patient.name %> - <%= patient.age %> - <%= patient.illness %> - <%= patient.allergies %>
                     </a>
                 </li>
             <% }) %>

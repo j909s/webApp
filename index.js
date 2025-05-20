@@ -18,28 +18,13 @@ app.use(express.json());
 app.use(methodOverride("_method"));
 app.set("view engine", "ejs");
 
-// const patientSchema = new mongoose.Schema({
-//   name: String,
-//   age: Number,
-//   illness: String,
-//   allergies: String,
-// });
-// const Patient = mongoose.model("Patient", patientSchema);
-
-const userSchema = new mongoose.Schema({
+const patientSchema = new mongoose.Schema({
   name: String,
-  username: String,
-  password: String,
+  age: Number,
+  illness: String,
+  allergies: String,
 });
-const User = mongoose.model("User", userSchema);
-
-const user1 = new User({
-    name: "Jade",
-    username: "user1",
-    password: "password1",
-});
-
-user1.save();
+const Patient = mongoose.model("Patient", patientSchema);
 
 
 app.get("/", (req, res) => res.redirect("/login"));

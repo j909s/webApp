@@ -3,19 +3,19 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Students List</title>
+        <title>Patients List</title>
     </head>
 
     <body>
-        <h1>Students List</h1>
+        <h1>Patients List</h1>
         <ul>
-            <% students.forEach(student=> { %>
-                <li><a href="/student/<%= student._id %>">
-                        <%= student.name %> - <%= student.course %>
+            <% patients.forEach(patient=> { %>
+                <li><a href="/patient/<%= patient._id %>">
+                        <%= patient.name %> - <%= patient.allergies %>
                     </a></li>
                 <% }) %>
         </ul>
-        <a href="/student/new">Add a New Student</a>
+        <a href="/patient/new">Add a New Patient</a>
     </body>
 </html> -->
 

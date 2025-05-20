@@ -6,6 +6,7 @@ const session = require("express-session");
 const bcrypt = require("bcryptjs");
 const MongoStore = require("connect-mongo");
 const User = require("./models/User");
+const Room = require("./models/Room");
 
 const app = express();
 
@@ -37,6 +38,16 @@ const Patient = mongoose.model("Patient", patientSchema);
 
 
 app.get("/", (req, res) => res.redirect("/login"));
+
+
+async function createRoom(){
+    const room = new Room({
+        number: 101,
+        beds: 2
+    });
+    await room.save();
+}
+createRoom();
 
 function isAuthenticated(req, res, next) {
     if (req.session.userId) return next();

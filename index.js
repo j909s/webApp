@@ -18,13 +18,13 @@ app.use(express.json());
 app.use(methodOverride("_method"));
 app.set("view engine", "ejs");
 
-const patientSchema = new mongoose.Schema({
-  name: String,
-  age: Number,
-  illness: String,
-  allergies: String,
-});
-const Patient = mongoose.model("Patient", patientSchema);
+// const patientSchema = new mongoose.Schema({
+//   name: String,
+//   age: Number,
+//   illness: String,
+//   allergies: String,
+// });
+// const Patient = mongoose.model("Patient", patientSchema);
 
 const userSchema = new mongoose.Schema({
   name: String,

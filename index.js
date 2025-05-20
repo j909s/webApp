@@ -26,7 +26,7 @@ const patientSchema = new mongoose.Schema({
 });
 const Patient = mongoose.model("Patient", patientSchema);
 
-// app.get("/", (req, res) => res.redirect("/patients"));
+app.get("/", (req, res) => res.redirect("/login"));
 
 function isAuthenticated(req, res, next) {
     if (req.session.userId) return next();

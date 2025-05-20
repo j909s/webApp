@@ -66,7 +66,7 @@ app.post("/login", async (req, res) => {
     if (!match) return res.status(500).send("Incorrect password");
 
 
-    req.session.userId = user._id;
+    // req.session.userId = user._id;
     res.redirect("/patients");
     }
     catch {

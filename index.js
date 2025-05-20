@@ -42,8 +42,8 @@ app.get("/", (req, res) => res.redirect("/login"));
 
 async function createRoom(){
     const room = new Room({
-        number: 101,
-        beds: 2
+        number: 102,
+        beds: 5
     });
     await room.save();
 }

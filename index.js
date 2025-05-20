@@ -64,7 +64,7 @@ app.post("/login", async (req, res) => {
     if (!match) return res.send("Incorrect password");
 
     req.session.userId = user._id;
-    res.redirect("/students");
+    res.redirect("/patients");
 });
 
 app.get("/logout", (req, res) => {
@@ -73,7 +73,7 @@ app.get("/logout", (req, res) => {
     });
 });
 
-app.get("/patients", async (req, res) => {
+app.get("/patients",isAuthenticated, async (req, res) => {
   try {
     const patients = await Patient.find();
     res.render("patients", { patients });

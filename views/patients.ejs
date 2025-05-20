@@ -11,7 +11,7 @@
         <ul>
             <% patients.forEach(patient=> { %>
                 <li><a href="/patient/<%= patient._id %>">
-                        <%= patient.name %> - <%= patient.age %> - <%= patient.illness %> - <%= patient.allergies %>
+                        <%= patient.name %> - <%= patient.age %> - <%= patient.illness %> - <%= patient.allergies %> - <%= patient.room %>
                     </a></li>
                 <% }) %>
         </ul>
@@ -81,12 +81,13 @@
             <% patients.forEach(patient => { %>
                 <li class="list-group-item">
                     <a href="/patient/<%= patient._id %>" class="text-decoration-none">
-                        <%= patient.name %> - <%= patient.age %> - <%= patient.illness %> - <%= patient.allergies %>
+                        <%= patient.name %> - <%= patient.age %> - <%= patient.illness %> - <%= patient.allergies %> - <%= patient.room %>
                     </a>
                 </li>
             <% }) %>
         </ul>
         <a href="/patient/new" class="btn btn-primary">Add a New Patient</a>
+        <a href="/room" class="btn btn-primary"> Add room</a>
     </div>
 
     <!-- Bootstrap JS Bundle (optional, if you need Bootstrap's JavaScript features) -->

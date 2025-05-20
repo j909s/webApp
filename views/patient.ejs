@@ -18,6 +18,8 @@
     </p>
     <p>Allergies: <%= patient.allergies %>
     </p>
+    <p>Room: <%= patient.room %>
+    </p>
     <a href="/patient/<%= patient._id %>/edit">Edit</a>
     <form action="/patient/<%= patient._id %>?_method=DELETE" method="POST">
         <button type="submit">Delete</button>
@@ -106,6 +108,7 @@
                 <p class="card-text"><strong>Age:</strong> <%= patient.age %></p>
                 <p class="card-text"><strong>Illness:</strong> <%= patient.illness %></p>
                 <p class="card-text"><strong>Allergies:</strong> <%= patient.allergies %></p>
+                <p class="card-text"><strong>Room:</strong> <%= patient.room %></p>
             </div>
         </div>
         

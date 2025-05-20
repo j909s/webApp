@@ -6,6 +6,7 @@ const session = require("express-session");
 const bcrypt = require("bcryptjs");
 const MongoStore = require("connect-mongo");
 const User = require("./models/User");
+const Room = require("./models/Room");
 
 const app = express();
 
@@ -31,11 +32,13 @@ const patientSchema = new mongoose.Schema({
   age: Number,
   illness: String,
   allergies: String,
+  room: { type: mongoose.Schema.Types.ObjectId, ref: "Room" },
 });
+
 const Patient = mongoose.model("Patient", patientSchema);
 
 
-app.get("/", (req, res) => res.redirect("/login"));
+app.get("/", (req, res) => res.redirect("/room"));
 
 function isAuthenticated(req, res, next) {
     if (req.session.userId) return next();
@@ -59,6 +62,22 @@ app.post("/register", async (req, res) => {
     }
 });
 
+app.get("/room", (req, res) => {
+    res.render("room");
+});
+
+app.post("/room", async (req, res) => {
+    const { number, beds } = req.body;
+
+    try {
+        const newRoom = new Room({ number,beds });
+        await newRoom.save();
+        res.redirect("/patients");
+    } catch (err) {
+        res.status(500).send("Registration failed.");
+    }
+});
+
 app.get("/login", (req, res) => {
     res.render("login");
 });
@@ -66,14 +85,14 @@ app.get("/login", (req, res) => {
 app.post("/login", async (req, res) => {
     try{
         const { username, password } = req.body;
-    const user = await User.findOne({ username });
+        const user = await User.findOne({ username });
 
-    if (!user) return res.status(500).send("User not found");
+        if (!user) return res.status(500).send("User not found");
 
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(500).send("Incorrect password");
-    req.session.userId = user._id;
-    res.redirect("/patients");
+        const match = await bcrypt.compare(password, user.password);
+        if (!match) return res.status(500).send("Incorrect password");
+        req.session.userId = user._id;
+        res.redirect("/patients");
     }
     catch {
     res.status(500).send("Error login failed");
@@ -96,11 +115,22 @@ app.get("/patients", isAuthenticated,async (req, res) => {
   }
 });
 
-app.get("/patient/new", (req, res) => res.render("new_patient"));
+app.get("/patient/new", (req, res) =>{ 
+    const rooms = await Room.find().sort("number");
+    res.render("new_patient", {rooms});
+});
 
 app.post("/patient", async (req, res) => {
   try {
-    await new Patient(req.body).save();
+    const { name, age, illness, allergies, room} = req.body;
+    const newPatient = new Patient({
+        name,
+        age,
+        illness,
+        allergies,
+        room
+    });
+    await newPatient.save();
     res.redirect("/patients");
   } catch {
     res.status(500).send("Error adding patient");

@@ -41,9 +41,13 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", async (req, res) => {
+    
+
     const { username, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    const existingUser = await User.findOne({username});
+    if (existingUser) return res.status(400).send("username is already in use.")
     try {
         const newUser = new User({ username, password: hashedPassword });
         await newUser.save();
@@ -76,7 +80,9 @@ app.post("/login", async (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
-    req.session.destroy(() => {
+    req.session.destroy(err => {
+        if (err) return res.status(500).send("Logout failed");
+        res.clearCookie("connect.sid");
         res.redirect("/login");
     });
 });
@@ -99,7 +105,7 @@ app.get("/patient/new", isAuthenticated, async (req, res) => {
   }
 });
 
-app.post("/patient", async (req, res) => {
+app.post("/patient",  isAuthenticated, async (req, res) => {
   try {
     const { name, age, illness, allergies, room } = req.body;
 
@@ -125,7 +131,7 @@ app.post("/patient", async (req, res) => {
   }
 });
 
-app.get("/patient/:id", async (req, res) => {
+app.get("/patient/:id", isAuthenticated, async (req, res) => {
   try {
     const patient = await Patient.findById(req.params.id);
     if (!patient) return res.status(404).send("Not Found");
@@ -135,7 +141,7 @@ app.get("/patient/:id", async (req, res) => {
   }
 });
 
-app.get("/patient/:id/edit", async (req, res) => {
+app.get("/patient/:id/edit", isAuthenticated, async (req, res) => {
   try {
     const patient = await Patient.findById(req.params.id);
     if (!patient) return res.status(404).send("Not Found");
@@ -145,7 +151,7 @@ app.get("/patient/:id/edit", async (req, res) => {
   }
 });
 
-app.put("/patient/:id", async (req, res) => {
+app.put("/patient/:id", isAuthenticated, async (req, res) => {
   try {
     await Patient.findByIdAndUpdate(req.params.id, req.body, { new: true });
     res.redirect("/patients");
@@ -154,7 +160,7 @@ app.put("/patient/:id", async (req, res) => {
   }
 });
 
-app.delete("/patient/:id", async (req, res) => {
+app.delete("/patient/:id", isAuthenticated, async (req, res) => {
   try {
     await Patient.findByIdAndDelete(req.params.id);
     res.redirect("/patients");
@@ -164,7 +170,7 @@ app.delete("/patient/:id", async (req, res) => {
 });
 
 
-app.get("/rooms", isAuthenticated, async (req, res) => {
+app.get("/rooms", isAuthenticated,isAuthenticated, async (req, res) => {
   try {
     const rooms = await Room.find().sort("number");
 
@@ -204,7 +210,7 @@ app.get("/patients/isolation", isAuthenticated, async (req, res) => {
     const isolationMap = {
       "COVID-19": "High",
       "Epiglottitis": "High",
-      "E. coli": "Hight",
+      "E. coli": "High",
       "Tuberculosis": "High",
       "Pneumonia": "High",
       "Ebola": "High",

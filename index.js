@@ -90,7 +90,14 @@ app.get("/patients", isAuthenticated,async (req, res) => {
   }
 });
 
-app.get("/patient/new", (req, res) => res.render("new_patient"));
+app.get("/patient/new", isAuthenticated, async (req, res) => {
+  try {
+    const rooms = await Room.find().sort("number");
+    res.render("new_patient", { rooms });
+  } catch {
+    res.status(500).send("Error fetching rooms");
+  }
+});
 
 app.post("/patient", async (req, res) => {
   try {

@@ -116,6 +116,18 @@
                 </div>
             </div>
 
+            <div class="mb-3">
+                <label for="room" class="form-label">Room</label>
+                <input type="text" class="form-control" id="room" name="allergies" placeholder="Enter Allergies" required>
+                <select name="room" id="room" class="form-control" required>
+                    <% rooms.forEach(room => { %>
+                        <option value="<%= room._id %>">Room <%= room.number %></option>
+                    <% }) %>
+                </select>
+                <div class="invalid-feedback">
+                    Please enter a room.
+                </div>
+            </div>
 
             <button type="submit" class="btn btn-primary">Add Patient</button>
             <a href="/patients" class="btn btn-secondary ms-2">Back to List</a>

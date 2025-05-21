@@ -280,6 +280,28 @@ app.get("/patients/isolation", isAuthenticated, async (req, res) => {
   }
 });
 
+app.get("/dashboard", isAuthenticated, async (req, res) => {
+  try {
+    const rooms = await Room.find();
+    const patients = await Patient.find();
+
+    const totalBeds = rooms.reduce((sum, room) => sum + room.beds, 0);
+    const occupiedBeds = await Patient.countDocuments();
+    const availableBeds = totalBeds - occupiedBeds;
+    const totalPatients = patients.length;
+
+    res.render("dashboard", {
+      totalBeds,
+      occupiedBeds,
+      availableBeds,
+      totalPatients
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error loading dashboard");
+  }
+});
+
 module.exports = app;
 
 if (require.main === module) {

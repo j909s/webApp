@@ -83,7 +83,7 @@ app.get("/logout", (req, res) => {
 
 app.get("/patients", isAuthenticated,async (req, res) => {
   try {
-    const patients = await Patient.find();
+    const patients = await Patient.find().populate("room");
     res.render("patients", { patients });
   } catch {
     res.status(500).send("Error fetching patients");

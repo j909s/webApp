@@ -105,29 +105,62 @@ app.get("/patient/new", isAuthenticated, async (req, res) => {
   }
 });
 
-app.post("/patient",  isAuthenticated, async (req, res) => {
+app.post("/patient", isAuthenticated, async (req, res) => {
   try {
-    const { name, age, illness, allergies, room } = req.body;
+    const { name, age, illness, allergies } = req.body;
 
-    // Step 1: Get the room by ID
-    const selectedRoom = await Room.findById(room);
-    if (!selectedRoom) {
-      return res.status(400).send("Room not found.");
+    
+    const isolationMap = {
+      "COVID-19": "High",
+      "Epiglottitis": "High",
+      "E. coli": "High",
+      "Tuberculosis": "High",
+      "Pneumonia": "High",
+      "Ebola": "High",
+      "MRSA": "Medium",
+      "C. diff": "Medium",
+      "Hepatitis B": "Medium",
+      "Salmonella": "Medium",
+      "Influenza": "Low",
+      "Cold": "Low",
+      "Chickenpox": "Low",
+      "Measles": "Low",
+      "RotaVirus": "Low",
+      "Whooping cough": "Low",
+      "Scabies": "Low"
+    };
+
+    const isolationLevel = isolationMap[illness?.trim()] || "None";
+    const candidateRooms = await Room.find({ isolationLevel });
+
+    
+    let assignedRoom = null;
+    for (const room of candidateRooms) {
+      const assignedCount = await Patient.countDocuments({ room: room._id });
+      if (assignedCount < room.beds) {
+        assignedRoom = room;
+        break;
+      }
     }
 
-    const assignedCount = await Patient.countDocuments({ room: room });
-
-    if (assignedCount >= selectedRoom.beds) {
-      return res.status(400).send("This room is full and cannot accept more patients.");
-      
+    if (!assignedRoom) {
+      return res.status(400).send(`No available ${isolationLevel} isolation rooms.`);
     }
-    const newPatient = new Patient({ name, age, illness, allergies, room });
+
+    
+    const newPatient = new Patient({
+      name,
+      age,
+      illness,
+      allergies,
+      room: assignedRoom._id
+    });
+
     await newPatient.save();
-
     res.redirect("/patients");
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error adding patient.");
+    res.status(500).send("Error assigning patient to room.");
   }
 });
 

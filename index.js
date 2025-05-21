@@ -92,7 +92,7 @@ app.get("/patients", isAuthenticated,async (req, res) => {
 
 app.get("/patient/new", isAuthenticated, async (req, res) => {
   try {
-    const rooms = await Room.find().sort("number");
+    const rooms = await Room.find();
     res.render("new_patient", { rooms });
   } catch {
     res.status(500).send("Error fetching rooms");
@@ -101,10 +101,30 @@ app.get("/patient/new", isAuthenticated, async (req, res) => {
 
 app.post("/patient", async (req, res) => {
   try {
-    await new Patient(req.body).save();
+    const { name, age, illness, allergies, room } = req.body;
+
+    // Step 1: Get the room by ID
+    const selectedRoom = await Room.findById(room);
+    if (!selectedRoom) {
+      return res.status(400).send("Room not found.");
+    }
+
+    // Step 2: Count how many patients are currently assigned to that room
+    const assignedCount = await Patient.countDocuments({ room: room });
+
+    // Step 3: Check if the room is already full
+    if (assignedCount >= selectedRoom.beds) {
+      return res.status(400).send("This room is full and cannot accept more patients.");
+    }
+
+    // Step 4: Save the patient if room is available
+    const newPatient = new Patient({ name, age, illness, allergies, room });
+    await newPatient.save();
+
     res.redirect("/patients");
-  } catch {
-    res.status(500).send("Error adding patient");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error adding patient.");
   }
 });
 
@@ -186,15 +206,22 @@ app.get("/patients/isolation", isAuthenticated, async (req, res) => {
     // Define mapping of illness → isolation level
     const isolationMap = {
       "COVID-19": "High",
+      "Epiglottitis": "High",
+      "E. coli": "Hight",
       "Tuberculosis": "High",
+      "Pneumonia": "High",
       "Ebola": "High",
       "MRSA": "Medium",
       "C. diff": "Medium",
       "Hepatitis B": "Medium",
+      "Salmonella": "Medium",
       "Influenza": "Low",
       "Cold": "Low",
       "Chickenpox": "Low",
-      "Measles": "Low"
+      "Measles": "Low",
+      "RotaVirus": "Low",
+      "Whooping cough": "Low",
+      "Scabies": "Low"
     };
 
     // Organize patients by isolation priority

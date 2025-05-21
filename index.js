@@ -179,7 +179,43 @@ app.post("/rooms", async (req, res) => {
 
 app.get("/rooms/new", isAuthenticated, async (req, res) =>res.render("new_room"));
 
+app.get("/patients/isolation", isAuthenticated, async (req, res) => {
+  try {
+    const patients = await Patient.find().populate("room");
 
+    // Define mapping of illness → isolation level
+    const isolationMap = {
+      "COVID-19": "High",
+      "Tuberculosis": "High",
+      "Ebola": "High",
+      "MRSA": "Medium",
+      "C. diff": "Medium",
+      "Hepatitis B": "Medium",
+      "Influenza": "Low",
+      "Cold": "Low",
+      "Chickenpox": "Low",
+      "Measles": "Low"
+    };
+
+    // Organize patients by isolation priority
+    const isolationLevels = {
+      High: [],
+      Medium: [],
+      Low: [],
+      None: []
+    };
+
+    patients.forEach(patient => {
+      const illness = patient.illness?.trim();
+      const priority = isolationMap[illness] || "None";
+      isolationLevels[priority].push(patient);
+    });
+
+    res.render("isolation_priority", { isolationLevels });
+  } catch {
+    res.status(500).send("Error classifying patients");
+  }
+});
 
 module.exports = app;
 

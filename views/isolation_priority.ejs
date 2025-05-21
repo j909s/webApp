@@ -1,31 +1,9 @@
-<!-- <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Patients List</title>
-    </head>
-
-    <body>
-        <h1>Patients List</h1>
-        <ul>
-            <% patients.forEach(patient=> { %>
-                <li><a href="/patient/<%= patient._id %>">
-                        <%= patient.name %> - <%= patient.age %> - <%= patient.illness %> - <%= patient.allergies %> - <%= patient.room %>
-                    </a></li>
-                <% }) %>
-        </ul>
-        <a href="/patient/new">Add a New Patient</a>
-    </body>
-</html> -->
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patients List</title>
+    <title>Room Details</title>
     <!-- Bootstrap CSS CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
@@ -89,22 +67,37 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="mb-4">Patients List</h1>
-        <ul class="list-group mb-4">
-            <% patients.forEach(patient => { %>
-                <li class="list-group-item">
-                    <a href="/patient/<%= patient._id %>" class="text-decoration-none">
-                        <%= patient.name %> - <%= patient.age %> - <%= patient.illness %> - <%= patient.allergies %> - <%= patient.room ? `Room ${patient.room.number}` : "Not assigned" %>
-                    </a>
-                </li>
-            <% }) %>
-        </ul>
-        <a href="/patient/new" class="btn btn-primary">Add a New Patient</a>
-        <a href="/rooms" class="btn btn-secondary">Show Rooms List</a>
-        <a href="/patients/isolation" class="btn btn-secondary">Show Rooms List</a>
+        <h1 class="mb-4">Isolation Priority</h1>
+        
+                <% ["High", "Medium", "Low", "None"].forEach(level => { %>
+                    <div class="card mb-4 border-<%= level === 'High' ? 'danger' : level === 'Medium' ? 'warning' : level === 'Low' ? 'info' : 'secondary' %>">
+                        <div class="card-body">
+                        <h3 class="card-title">
+                            <%= level %> Isolation Priority
+                        </h3>
+                        <% if (isolationLevels[level].length > 0) { %>
+                            <ul class="list-group list-group-flush">
+                            <% isolationLevels[level].forEach(patient => { %>
+                                <li class="list-group-item">
+                                <strong><%= patient.name %></strong> — <%= patient.illness %> 
+                                <% if (patient.room) { %> (Room <%= patient.room.number %>)<% } %>
+                                </li>
+                            <% }) %>
+                            </ul>
+                        <% } else { %>
+                            <p><em>No patients in this category.</em></p>
+                        <% } %>
+                        </div>
+                    </div>
+                    <% }) %>
+           
+        <div class="mb-3">
+            </form>
+        </div>
+        <a href="/patients" class="btn btn-secondary">Back to List</a>
     </div>
 
-    <!-- Bootstrap JS Bundle (optional, if you need Bootstrap's JavaScript features) -->
+    <!-- Bootstrap JS Bundle (optional) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

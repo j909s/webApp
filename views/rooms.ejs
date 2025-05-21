@@ -73,7 +73,7 @@
         <div class="card mb-4">
             <div class="card-body">
                 <% rooms.forEach(room => { %>
-                    <h2>Room <%= room.number %> — <%= room.beds %> bed(s)</h2>
+                    <h4>Room <%= room.number %> — <%= room.beds %> bed(s)</h4>
                     <% if (room.patients.length > 0) { %>
                     <ul>
                         <% room.patients.forEach(patient => { %>
@@ -90,7 +90,7 @@
         <div class="mb-3">
             </form>
         </div>
-        
+        <a href="/rooms/new" class="btn btn-primary">Add a New Room</a>
         <a href="/patients" class="btn btn-secondary">Back to List</a>
     </div>
 

@@ -168,6 +168,19 @@ app.get("/rooms", isAuthenticated, async (req, res) => {
   }
 });
 
+app.post("/rooms", async (req, res) => {
+  try {
+    await new Room(req.body).save();
+    res.redirect("/rooms");
+  } catch {
+    res.status(500).send("Error adding patient");
+  }
+});
+
+app.get("/rooms/new", isAuthenticated, async (req, res) =>res.render("new_room"));
+
+
+
 module.exports = app;
 
 if (require.main === module) {

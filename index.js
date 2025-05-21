@@ -146,6 +146,28 @@ app.delete("/patient/:id", async (req, res) => {
   }
 });
 
+
+app.get("/rooms", isAuthenticated, async (req, res) => {
+  try {
+    const rooms = await Room.find().sort("number");
+
+    // For each room, attach its patients
+    const roomsWithPatients = await Promise.all(
+      rooms.map(async (room) => {
+        const patients = await Patient.find({ room: room._id });
+        return {
+          ...room.toObject(),
+          patients
+        };
+      })
+    );
+
+    res.render("rooms", { rooms: roomsWithPatients });
+  } catch (err) {
+    res.status(500).send("Error fetching rooms");
+  }
+});
+
 module.exports = app;
 
 if (require.main === module) {

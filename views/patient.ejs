@@ -108,7 +108,7 @@
                 <p class="card-text"><strong>Age:</strong> <%= patient.age %></p>
                 <p class="card-text"><strong>Illness:</strong> <%= patient.illness %></p>
                 <p class="card-text"><strong>Allergies:</strong> <%= patient.allergies %></p>
-                <p class="card-text"><strong>Room:</strong> <%= patient.room %></p>
+                <p class="card-text"><strong>Room:</strong>  <%= patient.room ? `Room ${patient.room.number}` : "Not assigned" %></p>
             </div>
         </div>
         
@@ -120,6 +120,7 @@
         </div>
         
         <a href="/patients" class="btn btn-secondary">Back to List</a>
+        <a href="/rooms" class="btn btn-secondary">show rooms list</a>
     </div>
 
     <!-- Bootstrap JS Bundle (optional) -->

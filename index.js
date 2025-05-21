@@ -109,15 +109,12 @@ app.post("/patient", async (req, res) => {
       return res.status(400).send("Room not found.");
     }
 
-    // Step 2: Count how many patients are currently assigned to that room
     const assignedCount = await Patient.countDocuments({ room: room });
 
-    // Step 3: Check if the room is already full
     if (assignedCount >= selectedRoom.beds) {
       return res.status(400).send("This room is full and cannot accept more patients.");
+      
     }
-
-    // Step 4: Save the patient if room is available
     const newPatient = new Patient({ name, age, illness, allergies, room });
     await newPatient.save();
 

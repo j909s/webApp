@@ -71,7 +71,7 @@
         <div class="card mb-4">
             <div class="card-body">
                 <% rooms.forEach(room => { %>
-                    <h4>Room <%= room.number %> — <%= room.beds %> bed(s)</h4>
+                    <h4>Room <%= room.number %> — <%= room.beds %> bed(s) - <%= room.isolationLevel %> Isolation Level</h4>
                     <% if (room.patients.length > 0) { %>
                     <ul>
                         <% room.patients.forEach(patient => { %>

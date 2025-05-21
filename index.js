@@ -7,6 +7,7 @@ const bcrypt = require("bcryptjs");
 const MongoStore = require("connect-mongo");
 const User = require("./models/User");
 const Room = require("./models/Room");
+const Patient = require("./models/Patient")
 
 const app = express();
 
@@ -25,16 +26,6 @@ app.use(session({
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: "mongodb://20.0.153.128:10999/jadeDB" })
 }));
-
-
-const patientSchema = new mongoose.Schema({
-  name: String,
-  age: Number,
-  illness: String,
-  allergies: String,
-});
-
-const Patient = mongoose.model("Patient", patientSchema);
 
 
 app.get("/", (req, res) => res.redirect("/login"));

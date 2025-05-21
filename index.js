@@ -71,7 +71,7 @@ app.post("/login", async (req, res) => {
         const match = await bcrypt.compare(password, user.password);
         if (!match) return res.status(500).send("Incorrect password");
         req.session.userId = user._id;
-        res.redirect("/patients");
+        res.redirect("/dashboard");
     }
     catch {
     res.status(500).send("Error login failed");

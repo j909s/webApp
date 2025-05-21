@@ -81,7 +81,7 @@
             <% patients.forEach(patient => { %>
                 <li class="list-group-item">
                     <a href="/patient/<%= patient._id %>" class="text-decoration-none">
-                        <%= patient.name %> - <%= patient.age %> - <%= patient.illness %> - <%= patient.allergies %> - <%= patient.room.number %>
+                        <%= patient.name %> - <%= patient.age %> - <%= patient.illness %> - <%= patient.allergies %> - <%= patient.room ? `Room ${patient.room.number}` : "Not assigned" %>
                     </a>
                 </li>
             <% }) %>

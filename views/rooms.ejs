@@ -74,9 +74,9 @@
             <div class="card-body">
                 <% rooms.forEach(room => { %>
                     <h2>Room <%= room.number %> — <%= room.beds %> bed(s)</h2>
-                    <% if (room.patients.length > 0) { %>
+                    <% if (patients.room.length > 0) { %>
                     <ul>
-                        <% room.patients.forEach(patient => { %>
+                        <% patients.room.forEach(patient => { %>
                         <li><strong><%= patient.name %></strong>, Age <%= patient.age %></li>
                         <% }) %>
                     </ul>

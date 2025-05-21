@@ -7,7 +7,7 @@ const bcrypt = require("bcryptjs");
 const MongoStore = require("connect-mongo");
 const User = require("./models/User");
 const Room = require("./models/Room");
-const Patient = require("./models/Patient")
+const Patient = require("./models/Patient");
 
 const app = express();
 
@@ -28,8 +28,8 @@ app.use(session({
 }));
 
 
-app.get("/", (req, res) => res.redirect("/login"));
 
+app.get("/", (req, res) => res.redirect("/login"));
 
 function isAuthenticated(req, res, next) {
     if (req.session.userId) return next();
@@ -90,27 +90,11 @@ app.get("/patients", isAuthenticated,async (req, res) => {
   }
 });
 
-app.get("/patient/new", (req, res) => {
-    try{
-    const rooms = await Room.find().sort("number");
-    res.render("new_patient", {rooms});
-    }catch{
-      res.status(500).send("Error new patients");
-   }
-});
-    
+app.get("/patient/new", (req, res) => res.render("new_patient"));
 
 app.post("/patient", async (req, res) => {
   try {
-    const {name, age, illness, allergies, room} = req.body;
-    const newPatient = new Patient({
-        name,
-        age,
-        illness,
-        allergies,
-        room
-    });
-    await newPatient().save();
+    await new Patient(req.body).save();
     res.redirect("/patients");
   } catch {
     res.status(500).send("Error adding patient");

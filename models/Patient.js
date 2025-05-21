@@ -5,7 +5,6 @@ const patientSchema = new mongoose.Schema({
   age: Number,
   illness: String,
   allergies: String,
-  room: {type: mongoose.Schema.Types.ObjectId, ref: "Room"}
 });
 
 module.exports = mongoose.model("Patient", patientSchema);

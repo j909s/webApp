@@ -74,9 +74,9 @@
             <div class="card-body">
                 <% rooms.forEach(room => { %>
                     <h2>Room <%= room.number %> — <%= room.beds %> bed(s)</h2>
-                    <% if (patients.room.length > 0) { %>
+                    <% if (room.patients.length > 0) { %>
                     <ul>
-                        <% patients.room.forEach(patient => { %>
+                        <% room.patients.forEach(patient => { %>
                         <li><strong><%= patient.name %></strong>, Age <%= patient.age %></li>
                         <% }) %>
                     </ul>
@@ -88,9 +88,6 @@
         </div>
         
         <div class="mb-3">
-            <a href="/patient/<%= patient._id %>/edit" class="btn btn-primary me-2">Edit</a>
-            <form action="/patient/<%= patient._id %>?_method=DELETE" method="POST" class="d-inline">
-                <button type="submit" class="btn btn-danger">Delete</button>
             </form>
         </div>
         

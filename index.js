@@ -31,15 +31,6 @@ app.use(session({
 app.get("/", (req, res) => res.redirect("/login"));
 
 
-async function createRoom(){
-    const room = new Room({
-        number: 102,
-        beds: 5
-    });
-    await room.save();
-}
-createRoom();
-
 function isAuthenticated(req, res, next) {
     if (req.session.userId) return next();
     res.redirect("/login");
@@ -100,8 +91,12 @@ app.get("/patients", isAuthenticated,async (req, res) => {
 });
 
 app.get("/patient/new", (req, res) => {
+    try{
     const rooms = await Room.find().sort("number");
     res.render("new_patient", {rooms});
+    }catch{
+      res.status(500).send("Error new patients");
+   }
 });
     
 
